@@ -11,4 +11,4 @@ Refer ".py" files for source code
 
 Run ".exe" file to test
 
-(Note : Do Not place the .exe in any system folder)
+**(Note : Do Not place the .exe in any system folder)**
