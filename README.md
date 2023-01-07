@@ -1,14 +1,14 @@
 # Encryption-Ransomeware
 This is a Ransomeware created in Python.
 
-It encrypts all the files in the directory it's placed.
+It encrypts all the files in your Computer(Windows).
 
-It asks for a secret phrase (password) for decrypting your files back.
+It asks for a safegaurd (password) to start the encryption to make sure you don't accidentally run it in your main computer.
 
-The secret phrase is "Godzilla"  (Type this when prompted for a secret phrase to decrypt your files)
+safeguard password = 'start'
+
+After the files are encrypted a key to decrypt the files is sent to me(server).
 
 Refer ".py" files for source code
 
 Run ".exe" file to test
-
-**(Note : Do Not place the .exe in any system folder)**
